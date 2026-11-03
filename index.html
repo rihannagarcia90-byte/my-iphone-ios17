@@ -20,7 +20,7 @@ body{margin:0;min-height:100vh;display:grid;place-items:center;background:#e9e5e
 .dots{display:flex;justify-content:center;gap:13px;margin:20px 0}
 .dot{width:10px;height:10px;border:1px solid white;border-radius:50%}.dot.filled{background:white}
 .keypad{display:grid;grid-template-columns:repeat(3,64px);justify-content:center;gap:12px;margin-top:18px}
-.key{height:64px;border-radius:50%;border:1px solid #ffffff66;background:#ffffff25;color:white;font-size:25px;backdrop-filter:blur(8px)}
+.key{height:64px;border-radius:50%;border:1px solid #ffffff66;background:#ffffff25;color:white;font-size:25px;backdrop-filter:blur(8px);cursor:pointer}
 .key:active{background:#ffffff70}
 .lock-hint{font-size:11px;margin-top:12px;opacity:.8}
 .home{padding:64px 18px 110px}
@@ -36,7 +36,7 @@ body{margin:0;min-height:100vh;display:grid;place-items:center;background:#e9e5e
 .app-screen.open{display:block}
 .app-header{height:55px;padding:0 17px;display:grid;grid-template-columns:1fr 2fr 1fr;align-items:center;border-bottom:1px solid #e8e8ec;background:#fbfbfd;position:sticky;top:0;z-index:4}
 .app-header h2{font-size:19px;text-align:center;margin:0;font-weight:650}
-.back{border:0;background:none;color:var(--blue);font-size:15px;text-align:left;padding:8px 0}
+.back{border:0;background:none;color:var(--blue);font-size:15px;text-align:left;padding:8px 0;cursor:pointer}
 .content{padding:16px 17px 35px}
 .section-title{font-size:26px;font-weight:750;letter-spacing:-.7px;margin:3px 0 16px}
 .subtle{color:var(--muted);font-size:13px}
@@ -54,7 +54,7 @@ body{margin:0;min-height:100vh;display:grid;place-items:center;background:#e9e5e
 .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center;font-size:12px}
 .month-grid span{padding:8px 0;border-radius:9px;background:white}
 .month-grid .today{background:#1685f8;color:white}
-.action{background:var(--blue);border:0;border-radius:11px;padding:10px 14px;color:white;font-size:13px}
+.action{background:var(--blue);border:0;border-radius:11px;padding:10px 14px;color:white;font-size:13px;cursor:pointer}
 .pill{display:inline-block;background:#efeff4;padding:6px 10px;border-radius:20px;font-size:11px;color:#555}
 .music-cover{width:58px;height:58px;border-radius:10px;object-fit:cover;background:linear-gradient(135deg,#f6c8df,#a7a1dc);display:grid;place-items:center;font-size:22px;flex:none}
 .insta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
@@ -70,7 +70,7 @@ a{color:var(--blue)}
 <body>
 <div class="phone">
   <div class="wallpaper" id="wallpaper"></div>
-  <div class="status"><span id="statusTime">9:41</span><span>●●●　Wi-Fi　▰</span></div>
+  <div class="status"><span id="statusTime">9:41</span><span>●●● Wi-Fi ▰</span></div>
   <div class="island"></div>
 
   <section class="screen active" id="lockScreen">
@@ -80,10 +80,10 @@ a{color:var(--blue)}
       <div class="lock-message">Introduce tu código</div>
       <div class="dots"><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
       <div class="keypad">
-        <button class="key" onclick="pressKey('1')">1</button><button class="key" onclick="pressKey('2')">2</button><button class="key" onclick="pressKey('3')">3</button>
-        <button class="key" onclick="pressKey('4')">4</button><button class="key" onclick="pressKey('5')">5</button><button class="key" onclick="pressKey('6')">6</button>
-        <button class="key" onclick="pressKey('7')">7</button><button class="key" onclick="pressKey('8')">8</button><button class="key" onclick="pressKey('9')">9</button>
-        <button class="key" style="grid-column:2" onclick="pressKey('0')">0</button>
+        <button class="key" onclick="window.pressKey('1')">1</button><button class="key" onclick="window.pressKey('2')">2</button><button class="key" onclick="window.pressKey('3')">3</button>
+        <button class="key" onclick="window.pressKey('4')">4</button><button class="key" onclick="window.pressKey('5')">5</button><button class="key" onclick="window.pressKey('6')">6</button>
+        <button class="key" onclick="window.pressKey('7')">7</button><button class="key" onclick="window.pressKey('8')">8</button><button class="key" onclick="window.pressKey('9')">9</button>
+        <button class="key" style="grid-column:2" onclick="window.pressKey('0')">0</button>
       </div>
       <div class="lock-hint">Cualquier combinación de seis números desbloquea</div>
     </div>
@@ -98,26 +98,17 @@ a{color:var(--blue)}
   </section>
 
   <section class="app-screen" id="appScreen">
-    <div class="app-header"><button class="back" onclick="closeApp()">‹ Inicio</button><h2 id="appTitle"></h2><span></span></div>
+    <div class="app-header"><button class="back" onclick="window.closeApp()">‹ Inicio</button><h2 id="appTitle"></h2><span></span></div>
     <div class="content" id="appContent"></div>
   </section>
   <div class="home-indicator"></div>
 </div>
 
 <script>
-/* =========================================================
-   ✨ TU ZONA DE EDICIÓN
-   Cambia los textos y nombres dentro de estas listas.
-   Para fotos, primero súbelas a GitHub y escribe su ruta.
-   No borres las comillas ni las comas.
-   ========================================================= */
-
 const CONFIG = {
-  // Fondos independientes. Sube tus imágenes a la carpeta wallpapers.
-  lockWallpaper: "/wallpapers/bloqueo%20jj.jpeg",
-  homeWallpaper: "/wallpapers/wallpaper%20bloqueo%20kkk.jpeg",
+  lockWallpaper: "wallpapers/bloqueo%20jj.jpeg",
+  homeWallpaper: "wallpapers/wallpaper%20bloqueo%20kkk.jpeg",
 
-  // Aplicaciones visibles y sus iconos dentro de la carpeta icons.
   apps: [
     {id:"messages", name:"Mensajes", icon:"icons/ios17_messages.png"},
     {id:"photos", name:"Fotos", icon:"icons/ios18_photos.png"},
@@ -130,65 +121,22 @@ const CONFIG = {
     {id:"instagram", name:"Instagram", icon:"icons/ios17_instagram.png"}
   ],
   dock: ["phone","safari","messages","music"],
-
-  // GALERÍA: añade una línea por foto. Ejemplo: "photos/playa.jpg"
   photos: [],
-
-  // NOTAS: cada objeto tiene título y texto.
-  notes: [
-    // {title:"Mi primera nota", body:"Escribe aquí tu contenido."}
-  ],
-
-  // MENSAJES: un contacto por objeto y sus mensajes.
-  // from:"me" muestra tu burbuja a la derecha.
-  contacts: [
-    // {name:"Nombre", avatar:"photos/perfil.jpg", messages:[
-    //   {from:"them", text:"¡Hola!"},
-    //   {from:"me", text:"Holaaa"}
-    // ]}
-  ],
-
-  // SAFARI: búsquedas que aparecerán en el historial.
-  searches: [
-    // "Pinterest ideas de habitaciones",
-    // "Taylor Swift"
-  ],
-
-  // TELÉFONO: llamadas recientes.
-  calls: [
-    // {name:"Nombre del contacto", type:"Entrante", date:"Hoy, 10:30"}
-  ],
-
-  // GMAIL: correos personalizados.
-  emails: [
-    // {from:"Nombre <correo@ejemplo.com>", subject:"Asunto", date:"Hoy", body:"Contenido del correo."}
-  ],
-
-  // CALENDARIO: fechas importantes.
-  events: [
-    // {date:"2026-12-25", title:"Navidad", detail:"Cena familiar"}
-  ],
-
-  // MÚSICA: playlists y canciones.
-  playlists: [
-    // {name:"Mis favoritas", cover:"photos/portada.jpg", songs:["Canción 1 - Artista","Canción 2 - Artista"]}
-  ],
-
-  // INSTAGRAM: datos de perfil y publicaciones.
+  notes: [],
+  contacts: [],
+  searches: [],
+  calls: [],
+  emails: [],
+  events: [],
+  playlists: [],
   instagram: {
     username:"tu_usuario",
     name:"Tu nombre",
     bio:"Tu biografía aquí ♡",
-    avatar:"", // Ejemplo: "photos/perfil.jpg"
-    posts:[
-      // {image:"photos/post1.jpg", caption:"Mi primera publicación"}
-    ]
+    avatar:"",
+    posts:[]
   }
 };
-
-/* =========================================================
-   FIN DE TU ZONA DE EDICIÓN. El resto es el funcionamiento.
-   ========================================================= */
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -202,82 +150,96 @@ function setBackgrounds(){
   $("lockScreen").style.backgroundSize = $("homeScreen").style.backgroundSize = "cover";
   $("lockScreen").style.backgroundPosition = $("homeScreen").style.backgroundPosition = "center";
 }
+
 function clock(){
   const d=new Date(), t=d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
   $("statusTime").textContent=t;$("homeClock").textContent=t;$("lockClock").textContent=t;
   $("lockDate").textContent=d.toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
 }
-clock();setInterval(clock,1000);setBackgrounds();
+clock(); setInterval(clock,1000); setBackgrounds();
 
 function appIcon(app){
-  return `<div class="app" onclick="openApp('${app.id}')"><div class="app-icon"><img src="${esc(app.icon)}" alt=""></div>${esc(app.name)}</div>`;
+  return `<div class="app" onclick="window.openApp('${app.id}')"><div class="app-icon"><img src="${esc(app.icon)}" alt=""></div>${esc(app.name)}</div>`;
 }
+
 function buildHome(){
-  $("appGrid").innerHTML=CONFIG.apps.map(appIcon).join("");
-  $("dock").innerHTML=CONFIG.dock.map(id=>{
-    const a=CONFIG.apps.find(x=>x.id===id);return a?`<div class="app-icon" onclick="openApp('${a.id}')"><img src="${esc(a.icon)}" alt="${esc(a.name)}"></div>`:"";
+  $("appGrid").innerHTML = CONFIG.apps.map(appIcon).join("");
+  $("dock").innerHTML = CONFIG.dock.map(id=>{
+    const a = CONFIG.apps.find(x=>x.id===id);
+    return a ? `<div class="app-icon" onclick="window.openApp('${a.id}')"><img src="${esc(a.icon)}" alt="${esc(a.name)}"></div>` : "";
   }).join("");
 }
 buildHome();
 
-function pressKey(n){
-  if(code.length>=6)return;code+=n;
-  document.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("filled",i<code.length));
-  if(code.length===6)setTimeout(()=>{
-    $("lockScreen").classList.remove("active");$("homeScreen").classList.add("active");code="";
-    document.querySelectorAll(".dot").forEach(d=>d.classList.remove("filled"));
-  },250);
-}
-  window.pressKey = pressKey;
-function openApp(id){
-  const app=CONFIG.apps.find(a=>a.id===id);if(!app)return;
-  $("homeScreen").classList.remove("active");$("appScreen").classList.add("open");
-  $("appTitle").textContent=app.name;renderApp(id);
-}
-function closeApp(){$("appScreen").classList.remove("open");$("homeScreen").classList.add("active");}
-function empty(msg){return `<div class="empty">${esc(msg)}</div>`}
+// Funciones globales expuestas correctamente para el DOM
+window.pressKey = function(n){
+  if(code.length >= 6) return;
+  code += n;
+  document.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("filled", i < code.length));
+  
+  if(code.length === 6){
+    setTimeout(()=>{
+      $("lockScreen").classList.remove("active");
+      $("homeScreen").classList.add("active");
+      code = "";
+      document.querySelectorAll(".dot").forEach(d=>d.classList.remove("filled"));
+    }, 250);
+  }
+};
+
+window.openApp = function(id){
+  const app = CONFIG.apps.find(a=>a.id===id);
+  if(!app) return;
+  $("homeScreen").classList.remove("active");
+  $("appScreen").classList.add("open");
+  $("appTitle").textContent = app.name;
+  renderApp(id);
+};
+
+window.closeApp = function(){
+  $("appScreen").classList.remove("open");
+  $("homeScreen").classList.add("active");
+};
+
+function empty(msg){ return `<div class="empty">${esc(msg)}</div>`; }
 
 function renderApp(id){
-  const c=$("appContent");
+  const c = $("appContent");
   if(id==="photos"){
-    c.innerHTML=`<div class="section-title">Biblioteca</div><p class="subtle">${CONFIG.photos.length} fotos</p><div class="photo-grid">${CONFIG.photos.map(p=>`<img src="${esc(p)}" alt="Foto">`).join("")}</div>${CONFIG.photos.length?"":empty("Tu galería está vacía. Añade fotos en la sección CONFIG.photos del código.")}`;
+    c.innerHTML=`<div class="section-title">Biblioteca</div><p class="subtle">${CONFIG.photos.length} fotos</p><div class="photo-grid">${CONFIG.photos.map(p=>`<img src="${esc(p)}" alt="Foto">`).join("")}</div>${CONFIG.photos.length?"":empty("Tu galería está vacía.")}`;
   }
   if(id==="notes"){
-    c.innerHTML=`<div class="section-title">Notas</div>${CONFIG.notes.map(n=>`<div class="note-card"><strong>${esc(n.title)}</strong>${esc(n.body)}</div>`).join("")}${CONFIG.notes.length?"":empty("Todavía no hay notas. Añade las tuyas en CONFIG.notes.")}`;
+    c.innerHTML=`<div class="section-title">Notas</div>${CONFIG.notes.map(n=>`<div class="note-card"><strong>${esc(n.title)}</strong>${esc(n.body)}</div>`).join("")}${CONFIG.notes.length?"":empty("Todavía no hay notas.")}`;
   }
   if(id==="messages"){
-    c.innerHTML=`<div class="section-title">Mensajes</div>${CONFIG.contacts.map((p,i)=>`<div class="list-row row"><div class="avatar">${p.avatar?`<img src="${esc(p.avatar)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:esc((p.name||"?").slice(0,1).toUpperCase())}</div><div style="flex:1"><strong>${esc(p.name)}</strong><small>${esc(p.messages?.at(-1)?.text||"")}</small></div><button class="action" onclick="showChat(${i})">Chat</button></div>`).join("")}${CONFIG.contacts.length?"":empty("Tus contactos y chats aparecerán aquí. Edítalos en CONFIG.contacts.")}`;
+    c.innerHTML=`<div class="section-title">Mensajes</div>${CONFIG.contacts.map((p,i)=>`<div class="list-row row"><div class="avatar">${p.avatar?`<img src="${esc(p.avatar)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:esc((p.name||"?").slice(0,1).toUpperCase())}</div><div style="flex:1"><strong>${esc(p.name)}</strong><small>${esc(p.messages?.at(-1)?.text||"")}</small></div><button class="action" onclick="window.showChat(${i})">Chat</button></div>`).join("")}${CONFIG.contacts.length?"":empty("Tus contactos aparecerán aquí.")}`;
   }
   if(id==="safari"){
-    c.innerHTML=`<div class="section-title">Safari</div><div class="card">⌕　Buscar en la web</div><h3>Historial</h3>${CONFIG.searches.map(s=>`<div class="list-row">◷　${esc(s)}</div>`).join("")}${CONFIG.searches.length?"":empty("Tu historial está vacío. Añade búsquedas en CONFIG.searches.")}`;
+    c.innerHTML=`<div class="section-title">Safari</div><div class="card">⌕ Buscar en la web</div><h3>Historial</h3>${CONFIG.searches.map(s=>`<div class="list-row">◷ ${esc(s)}</div>`).join("")}${CONFIG.searches.length?"":empty("Historial vacío.")}`;
   }
   if(id==="phone"){
-    c.innerHTML=`<div class="section-title">Recientes</div>${CONFIG.calls.map(x=>`<div class="list-row row"><div class="avatar">☎</div><div><strong>${esc(x.name)}</strong><small>${esc(x.type)} · ${esc(x.date)}</small></div></div>`).join("")}${CONFIG.calls.length?"":empty("No hay llamadas todavía. Añade registros en CONFIG.calls.")}<h3>Contactos</h3>${CONFIG.contacts.map(x=>`<div class="list-row">${esc(x.name)}</div>`).join("")}`;
+    c.innerHTML=`<div class="section-title">Recientes</div>${CONFIG.calls.map(x=>`<div class="list-row row"><div class="avatar">☎</div><div><strong>${esc(x.name)}</strong><small>${esc(x.type)} · ${esc(x.date)}</small></div></div>`).join("")}${CONFIG.calls.length?"":empty("No hay llamadas.")}<h3>Contactos</h3>${CONFIG.contacts.map(x=>`<div class="list-row">${esc(x.name)}</div>`).join("")}`;
   }
   if(id==="mail"){
-    c.innerHTML=`<div class="section-title">Bandeja de entrada</div>${CONFIG.emails.map(e=>`<div class="list-row"><strong>${esc(e.from)}</strong><div>${esc(e.subject)}</div><small>${esc(e.date)}</small><p>${esc(e.body)}</p></div>`).join("")}${CONFIG.emails.length?"":empty("Tu bandeja está vacía. Añade correos en CONFIG.emails.")}`;
+    c.innerHTML=`<div class="section-title">Bandeja de entrada</div>${CONFIG.emails.map(e=>`<div class="list-row"><strong>${esc(e.from)}</strong><div>${esc(e.subject)}</div><small>${esc(e.date)}</small><p>${esc(e.body)}</p></div>`).join("")}${CONFIG.emails.length?"":empty("Bandeja vacía.")}`;
   }
   if(id==="calendar"){
     const ev=[...CONFIG.events].sort((a,b)=>a.date.localeCompare(b.date));
-    c.innerHTML=`<div class="section-title">${new Date().toLocaleDateString("es-ES",{month:"long",year:"numeric"})}</div><div class="card">${ev.map(e=>`<div class="list-row"><strong>${esc(e.date)}</strong>${esc(e.title)}<div class="subtle">${esc(e.detail||"")}</div></div>`).join("")}</div>${ev.length?"":empty("No hay fechas todavía. Añade eventos en CONFIG.events.")}`;
+    c.innerHTML=`<div class="section-title">${new Date().toLocaleDateString("es-ES",{month:"long",year:"numeric"})}</div><div class="card">${ev.map(e=>`<div class="list-row"><strong>${esc(e.date)}</strong>${esc(e.title)}<div class="subtle">${esc(e.detail||"")}</div></div>`).join("")}</div>${ev.length?"":empty("No hay eventos.")}`;
   }
   if(id==="music"){
-    c.innerHTML=`<div class="section-title">Biblioteca</div><h3>Playlists</h3>${CONFIG.playlists.map(p=>`<div class="list-row row"><div class="music-cover">${p.cover?`<img src="${esc(p.cover)}" style="width:100%;height:100%;object-fit:cover">`:"♫"}</div><div><strong>${esc(p.name)}</strong><small>${(p.songs||[]).length} canciones</small></div></div><div class="card">${(p.songs||[]).map(s=>`<div class="list-row">♫　${esc(s)}</div>`).join("")}</div>`).join("")}${CONFIG.playlists.length?"":empty("Crea tus playlists en CONFIG.playlists.")}`;
+    c.innerHTML=`<div class="section-title">Biblioteca</div><h3>Playlists</h3>${CONFIG.playlists.map(p=>`<div class="list-row row"><div class="music-cover">${p.cover?`<img src="${esc(p.cover)}" style="width:100%;height:100%;object-fit:cover">`:"♫"}</div><div><strong>${esc(p.name)}</strong><small>${(p.songs||[]).length} canciones</small></div></div><div class="card">${(p.songs||[]).map(s=>`<div class="list-row">♫ ${esc(s)}</div>`).join("")}</div>`).join("")}${CONFIG.playlists.length?"":empty("Crea tus playlists.")}`;
   }
   if(id==="instagram"){
     const ig=CONFIG.instagram;
-    c.innerHTML=`<div class="profile-top"><div class="profile-avatar">${ig.avatar?`<img src="${esc(ig.avatar)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:"♡"}</div><h3>${esc(ig.username)}</h3><strong>${esc(ig.name)}</strong><p>${esc(ig.bio)}</p><span class="pill">${ig.posts.length} publicaciones</span></div><div class="insta-grid">${ig.posts.map(p=>`<img src="${esc(p.image)}" alt="${esc(p.caption)}" title="${esc(p.caption)}">`).join("")}</div>${ig.posts.length?"":empty("Añade tus publicaciones en CONFIG.instagram.posts.")}`;
+    c.innerHTML=`<div class="profile-top"><div class="profile-avatar">${ig.avatar?`<img src="${esc(ig.avatar)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:"♡"}</div><h3>${esc(ig.username)}</h3><strong>${esc(ig.name)}</strong><p>${esc(ig.bio)}</p><span class="pill">${ig.posts.length} publicaciones</span></div><div class="insta-grid">${ig.posts.map(p=>`<img src="${esc(p.image)}" alt="${esc(p.caption)}" title="${esc(p.caption)}">`).join("")}</div>${ig.posts.length?"":empty("Añade publicaciones.")}`;
   }
 }
-function showChat(i){
+
+window.showChat = function(i){
   const p=CONFIG.contacts[i], c=$("appContent");
-  c.innerHTML=`<button class="back" onclick="renderApp('messages')">‹ Mensajes</button><div class="section-title">${esc(p.name)}</div>${(p.messages||[]).map(m=>`<div class="bubble ${m.from==="me"?"me":""}">${esc(m.text)}</div>`).join("")}${(p.messages||[]).length?"":empty("Esta conversación todavía no tiene mensajes.")}`;
-}
+  c.innerHTML=`<button class="back" onclick="window.renderApp('messages')">‹ Mensajes</button><div class="section-title">${esc(p.name)}</div>${(p.messages||[]).map(m=>`<div class="bubble ${m.from==="me"?"me":""}">${esc(m.text)}</div>`).join("")}${(p.messages||[]).length?"":empty("Sin mensajes.")}`;
+};
 </script>
 </body>
-</html>
-
-p=Path("/mnt/data/my-iphone-base.html")
-p.write_text(html, encoding="utf-8")
-print(f"Creado: {p} | {p.stat().st_size:,} bytes")
 </html>
