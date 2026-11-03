@@ -1,0 +1,830 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My iPhone</title>
+
+<style>
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#e8e2e8;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+.phone {
+  width:min(390px,100vw);
+  height:min(844px,100dvh);
+  min-height:600px;
+  position:relative;
+  overflow:hidden;
+  border:8px solid #252329;
+  border-radius:48px;
+  background:#e8b9d1;
+  color:white;
+  box-shadow:0 20px 60px #0003;
+}
+
+.wallpaper {
+  position:absolute;
+  inset:0;
+  background:linear-gradient(145deg,#f8d8e7,#dca9cc,#bba7d8);
+  background-size:cover;
+  background-position:center;
+}
+
+.status {
+  position:absolute;
+  z-index:10;
+  top:0;
+  left:0;
+  width:100%;
+  height:43px;
+  padding:12px 23px;
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  font-weight:650;
+  pointer-events:none;
+}
+
+.island {
+  position:absolute;
+  top:8px;
+  left:50%;
+  transform:translateX(-50%);
+  width:105px;
+  height:30px;
+  border-radius:30px;
+  background:#080808;
+  z-index:11;
+}
+
+.screen {
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:none;
+}
+
+.screen.active { display:block; }
+
+.lock {
+  text-align:center;
+  padding-top:105px;
+}
+
+.lock-date { font-size:17px; }
+.lock-clock {
+  font-size:76px;
+  font-weight:300;
+  letter-spacing:-4px;
+}
+
+.lock-message {
+  margin-top:40px;
+  font-size:14px;
+}
+
+.dots {
+  display:flex;
+  justify-content:center;
+  gap:13px;
+  margin:22px 0;
+}
+
+.dot {
+  width:11px;
+  height:11px;
+  border:1px solid white;
+  border-radius:50%;
+}
+
+.dot.filled { background:white; }
+
+.keypad {
+  display:grid;
+  grid-template-columns:repeat(3,65px);
+  justify-content:center;
+  gap:13px;
+  margin-top:20px;
+}
+
+.key {
+  height:65px;
+  border-radius:50%;
+  border:1px solid #ffffff55;
+  background:#ffffff22;
+  color:white;
+  font-size:25px;
+  cursor:pointer;
+  backdrop-filter:blur(8px);
+}
+
+.key:active { background:#ffffff66; }
+
+.lock-bottom {
+  position:absolute;
+  bottom:35px;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+}
+
+.lock-bottom button {
+  background:#ffffff44;
+  border:0;
+  border-radius:50%;
+  width:45px;
+  height:45px;
+  color:white;
+  font-size:20px;
+}
+
+.home {
+  padding:60px 18px 100px;
+}
+
+.home-clock {
+  text-align:center;
+  font-size:42px;
+  font-weight:300;
+  margin:15px 0 25px;
+}
+
+.app-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:23px 8px;
+}
+
+.app {
+  text-align:center;
+  font-size:11px;
+  cursor:pointer;
+  min-width:0;
+}
+
+.app-icon {
+  width:58px;
+  height:58px;
+  margin:0 auto 6px;
+  border-radius:15px;
+  display:grid;
+  place-items:center;
+  font-size:30px;
+  background:linear-gradient(145deg,#ffffff,#e9e5eb);
+  box-shadow:0 3px 9px #0002;
+  color:#333;
+}
+
+.messages { background:linear-gradient(145deg,#64e77c,#21a843); }
+.photos { background:linear-gradient(145deg,#fff,#eee); }
+.notes { background:linear-gradient(145deg,#fff5a6,#edcf48); }
+.calendar { background:linear-gradient(145deg,#fff,#eee); }
+.phone { background:linear-gradient(145deg,#71e78c,#1da94b); }
+.mail { background:linear-gradient(145deg,#70baff,#3478dd); }
+.safari { background:linear-gradient(145deg,#8bdcff,#2672e9); }
+.camera { background:linear-gradient(145deg,#bbb,#444); }
+.settings { background:linear-gradient(145deg,#ddd,#888); }
+
+.dock {
+  position:absolute;
+  bottom:20px;
+  left:12px;
+  right:12px;
+  height:78px;
+  border-radius:25px;
+  background:#ffffff55;
+  backdrop-filter:blur(20px);
+  display:flex;
+  justify-content:space-evenly;
+  align-items:center;
+}
+
+.dock .app-icon { margin:0; }
+
+.indicator {
+  position:absolute;
+  bottom:6px;
+  left:50%;
+  transform:translateX(-50%);
+  height:4px;
+  width:105px;
+  background:white;
+  border-radius:10px;
+  z-index:20;
+}
+
+.app-screen {
+  position:absolute;
+  inset:0;
+  background:#f8f7fa;
+  color:#222;
+  display:none;
+  z-index:5;
+  padding-top:48px;
+  overflow-y:auto;
+}
+
+.app-screen.open { display:block; }
+
+.app-header {
+  padding:12px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #ddd;
+  background:#faf9fb;
+  position:sticky;
+  top:0;
+  z-index:3;
+}
+
+.app-header h2 { font-size:22px; margin:0; }
+
+.back {
+  border:0;
+  background:none;
+  color:#1685db;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.content { padding:17px; }
+
+.action {
+  background:#1685db;
+  border:0;
+  border-radius:12px;
+  padding:11px 15px;
+  color:white;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.item {
+  padding:14px 5px;
+  border-bottom:1px solid #e6e6e6;
+  cursor:pointer;
+}
+
+.item strong { display:block; margin-bottom:4px; }
+.item small { color:#888; }
+
+input, textarea {
+  font:inherit;
+  width:100%;
+  border:1px solid #ddd;
+  padding:12px;
+  border-radius:10px;
+  margin:7px 0;
+  background:white;
+  color:#222;
+}
+
+textarea {
+  min-height:130px;
+  resize:vertical;
+}
+
+.empty {
+  text-align:center;
+  color:#999;
+  padding:35px 10px;
+}
+
+.photo-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+}
+
+.photo-grid img {
+  width:100%;
+  aspect-ratio:1;
+  object-fit:cover;
+}
+
+.home-button {
+  position:fixed;
+  bottom:0;
+}
+
+#cameraVideo {
+  width:100%;
+  background:#222;
+  border-radius:12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+
+<div class="wallpaper" id="wallpaper"></div>
+
+<div class="status">
+  <span id="statusTime">9:41</span>
+  <span>●●●　Wi-Fi　▰</span>
+</div>
+
+<div class="island"></div>
+
+<!-- PANTALLA DE BLOQUEO -->
+<section class="screen active" id="lockScreen">
+  <div class="lock">
+    <div class="lock-date" id="lockDate"></div>
+    <div class="lock-clock" id="lockClock">9:41</div>
+    <div class="lock-message">Introduce tu código</div>
+
+    <div class="dots" id="dots">
+      <span class="dot"></span><span class="dot"></span>
+      <span class="dot"></span><span class="dot"></span>
+      <span class="dot"></span><span class="dot"></span>
+    </div>
+
+    <div class="keypad">
+      <button class="key" onclick="pressKey('1')">1</button>
+      <button class="key" onclick="pressKey('2')">2</button>
+      <button class="key" onclick="pressKey('3')">3</button>
+      <button class="key" onclick="pressKey('4')">4</button>
+      <button class="key" onclick="pressKey('5')">5</button>
+      <button class="key" onclick="pressKey('6')">6</button>
+      <button class="key" onclick="pressKey('7')">7</button>
+      <button class="key" onclick="pressKey('8')">8</button>
+      <button class="key" onclick="pressKey('9')">9</button>
+      <button class="key" onclick="pressKey('0')" style="grid-column:2">0</button>
+    </div>
+  </div>
+
+  <div class="lock-bottom">
+    <button>🔦</button>
+    <button>📷</button>
+  </div>
+</section>
+
+<!-- PANTALLA DE INICIO -->
+<section class="screen" id="homeScreen">
+  <div class="home">
+    <div class="home-clock" id="homeClock">9:41</div>
+
+    <div class="app-grid">
+
+      <div class="app" onclick="openApp('messages')">
+        <div class="app-icon messages">💬</div>Mensajes
+      </div>
+
+      <div class="app" onclick="openApp('photos')">
+        <div class="app-icon photos">🌈</div>Fotos
+      </div>
+
+      <div class="app" onclick="openApp('notes')">
+        <div class="app-icon notes">📝</div>Notas
+      </div>
+
+      <div class="app" onclick="openApp('calendar')">
+        <div class="app-icon calendar">🗓️</div>Calendario
+      </div>
+
+      <div class="app" onclick="openApp('phone')">
+        <div class="app-icon phone">📞</div>Teléfono
+      </div>
+
+      <div class="app" onclick="openApp('mail')">
+        <div class="app-icon mail">✉️</div>Gmail
+      </div>
+
+      <div class="app" onclick="openApp('safari')">
+        <div class="app-icon safari">🧭</div>Safari
+      </div>
+
+      <div class="app" onclick="openApp('camera')">
+        <div class="app-icon camera">📷</div>Cámara
+      </div>
+
+      <div class="app" onclick="openApp('settings')">
+        <div class="app-icon settings">⚙️</div>Ajustes
+      </div>
+
+    </div>
+  </div>
+
+  <div class="dock">
+    <div class="app-icon phone" onclick="openApp('phone')">📞</div>
+    <div class="app-icon safari" onclick="openApp('safari')">🧭</div>
+    <div class="app-icon messages" onclick="openApp('messages')">💬</div>
+    <div class="app-icon mail" onclick="openApp('mail')">✉️</div>
+  </div>
+</section>
+
+<!-- APLICACIONES -->
+<section class="app-screen" id="appScreen">
+  <div class="app-header">
+    <button class="back" onclick="closeApp()">‹ Inicio</button>
+    <h2 id="appTitle">App</h2>
+    <span></span>
+  </div>
+  <div class="content" id="appContent"></div>
+</section>
+
+<div class="indicator"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let code = "";
+let data = JSON.parse(localStorage.getItem("iphoneData") || "{}");
+
+const defaults = {
+  contacts:[],
+  messages:[],
+  notes:[],
+  events:[],
+  calls:[],
+  emails:[],
+  searches:[],
+  photos:[]
+};
+
+Object.keys(defaults).forEach(key => {
+  if (!Array.isArray(data[key])) data[key] = [];
+});
+
+function save() {
+  localStorage.setItem("iphoneData",JSON.stringify(data));
+}
+
+function updateClock() {
+  const now = new Date();
+  const time = now.toLocaleTimeString("en-US",{
+    hour:"numeric",minute:"2-digit"
+  });
+  $("statusTime").textContent = time;
+  $("homeClock").textContent = time;
+  $("lockClock").textContent = time;
+
+  $("lockDate").textContent = now.toLocaleDateString("es-ES",{
+    weekday:"long",day:"numeric",month:"long"
+  });
+}
+updateClock();
+setInterval(updateClock,1000);
+
+function pressKey(n) {
+  if(code.length >= 6) return;
+  code += n;
+
+  document.querySelectorAll(".dot").forEach((dot,i)=>{
+    dot.classList.toggle("filled",i < code.length);
+  });
+
+  if(code.length === 6) {
+    setTimeout(()=>{
+      $("lockScreen").classList.remove("active");
+      $("homeScreen").classList.add("active");
+      code = "";
+      document.querySelectorAll(".dot").forEach(d=>d.classList.remove("filled"));
+    },250);
+  }
+}
+
+function openApp(name) {
+  $("homeScreen").classList.remove("active");
+  $("appScreen").classList.add("open");
+  $("appTitle").textContent = name.charAt(0).toUpperCase()+name.slice(1);
+  renderApp(name);
+}
+
+function closeApp() {
+  $("appScreen").classList.remove("open");
+  $("homeScreen").classList.add("active");
+}
+
+function renderApp(name) {
+  const c = $("appContent");
+  c.innerHTML = "";
+
+  if(name === "messages") {
+    c.innerHTML = `
+      <h3>Mensajes</h3>
+      <button class="action" onclick="addContact()">+ Nuevo contacto</button>
+      <button class="action" onclick="addMessage()" style="margin-left:5px">+ Mensaje</button>
+      <div id="messageList"></div>`;
+    data.contacts.forEach(contact=>{
+      const div=document.createElement("div");
+      div.className="item";
+      div.innerHTML="<strong></strong><small>Ver conversación</small>";
+      div.querySelector("strong").textContent=contact.name;
+      div.onclick=()=>conversation(contact.name);
+      $("messageList").appendChild(div);
+    });
+    if(!data.contacts.length) $("messageList").innerHTML='<div class="empty">Tus conversaciones aparecerán aquí.</div>';
+  }
+
+  if(name === "photos") {
+    c.innerHTML=`
+      <h3>Biblioteca</h3>
+      <input type="file" accept="image/*" multiple onchange="addPhotos(this)">
+      <div class="photo-grid" id="photoGrid"></div>`;
+    data.photos.forEach(src=>{
+      const img=document.createElement("img");
+      img.src=src;
+      $("photoGrid").appendChild(img);
+    });
+  }
+
+  if(name === "notes") {
+    c.innerHTML=`
+      <h3>Todas las notas</h3>
+      <button class="action" onclick="newNote()">+ Nueva nota</button>
+      <div id="noteList"></div>`;
+    data.notes.forEach((note,i)=>{
+      const div=document.createElement("div");
+      div.className="item";
+      const title=document.createElement("strong");
+      title.textContent=note.title || "Nota sin título";
+      const body=document.createElement("small");
+      body.textContent=note.body;
+      div.append(title,body);
+      div.onclick=()=>editNote(i);
+      $("noteList").appendChild(div);
+    });
+    if(!data.notes.length) $("noteList").innerHTML='<div class="empty">Aquí aparecerán tus notas.</div>';
+  }
+
+  if(name === "calendar") {
+    c.innerHTML=`
+      <h3>${new Date().toLocaleDateString("es-ES",{month:"long",year:"numeric"})}</h3>
+      <p>${new Date().toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"})}</p>
+      <button class="action" onclick="addEvent()">+ Nuevo evento</button>
+      <div id="eventList"></div>`;
+    data.events.forEach(e=>{
+      const div=document.createElement("div");
+      div.className="item";
+      div.textContent=e.date+" · "+e.title;
+      $("eventList").appendChild(div);
+    });
+    if(!data.events.length) $("eventList").innerHTML='<div class="empty">No tienes eventos todavía.</div>';
+  }
+
+  if(name === "phone") {
+    c.innerHTML=`
+      <h3>Contactos</h3>
+      <button class="action" onclick="addContact()">+ Añadir contacto</button>
+      <h3 style="margin-top:25px">Recientes</h3>
+      <div id="callList"></div>`;
+    data.calls.forEach(call=>{
+      const div=document.createElement("div");
+      div.className="item";
+      div.textContent=call.name+" · "+call.date;
+      $("callList").appendChild(div);
+    });
+    if(!data.calls.length) $("callList").innerHTML='<div class="empty">Tu historial de llamadas está vacío.</div>';
+  }
+
+  if(name === "mail") {
+    c.innerHTML=`
+      <h3>Bandeja de entrada</h3>
+      <button class="action" onclick="addEmail()">+ Crear correo</button>
+      <div id="emailList"></div>`;
+    data.emails.forEach((e,i)=>{
+      const div=document.createElement("div");
+      div.className="item";
+      div.innerHTML="<strong></strong><small></small>";
+      div.querySelector("strong").textContent=e.from+" · "+e.subject;
+      div.querySelector("small").textContent=e.body;
+      $("emailList").appendChild(div);
+    });
+    if(!data.emails.length) $("emailList").innerHTML='<div class="empty">No hay correos todavía.</div>';
+  }
+
+  if(name === "safari") {
+    c.innerHTML=`
+      <h3>Buscar en Safari</h3>
+      <form id="searchForm">
+        <input id="searchInput" placeholder="Buscar o escribir una dirección">
+        <button class="action">Buscar</button>
+      </form>
+      <h3>Historial</h3>
+      <div id="searchList"></div>`;
+    data.searches.forEach(s=>{
+      const div=document.createElement("div");
+      div.className="item";
+      div.textContent=s;
+      $("searchList").appendChild(div);
+    });
+    $("searchForm").onsubmit=e=>{
+      e.preventDefault();
+      const q=$("searchInput").value.trim();
+      if(!q)return;
+      data.searches.unshift(q);
+      save();
+      window.open("https://www.google.com/search?q="+encodeURIComponent(q),"_blank");
+      renderApp("safari");
+    };
+  }
+
+  if(name === "camera") {
+    c.innerHTML=`
+      <h3>Cámara</h3>
+      <video id="cameraVideo" autoplay playsinline></video>
+      <button class="action" onclick="startCamera()">Abrir cámara</button>
+      <button class="action" onclick="takePhoto()">Tomar foto</button>
+      <canvas id="cameraCanvas" hidden></canvas>
+      <p id="cameraStatus"></p>`;
+  }
+
+  if(name === "settings") {
+    c.innerHTML=`
+      <h3>Personalización</h3>
+      <p>Fondo de pantalla</p>
+      <label>Elegir fotografía:</label>
+      <input type="file" accept="image/*" onchange="setWallpaper(this)">
+      <button class="action" onclick="resetWallpaper()">Restablecer fondo</button>
+      <hr>
+      <h3>Bloqueo</h3>
+      <p>La contraseña de esta versión acepta cualquier combinación de seis números.</p>
+      <button class="action" onclick="lockPhone()">Bloquear iPhone</button>`;
+  }
+}
+
+function addContact() {
+  const name=prompt("Nombre del contacto:");
+  if(!name)return;
+  data.contacts.push({name});
+  save();
+  renderApp("messages");
+}
+
+function addMessage() {
+  if(!data.contacts.length) return alert("Primero agrega un contacto.");
+  const names=data.contacts.map(c=>c.name);
+  const name=prompt("Nombre del contacto:\n"+names.join(", "));
+  if(!name || !names.includes(name))return;
+  conversation(name);
+}
+
+function conversation(name) {
+  const c=$("appContent");
+  c.innerHTML=`
+    <button class="back" onclick="renderApp('messages')">‹ Conversaciones</button>
+    <h3>${escapeText(name)}</h3>
+    <div id="chatList"></div>
+    <input id="chatInput" placeholder="iMessage">
+    <button class="action" onclick="sendMessage('${encodeURIComponent(name)}')">Enviar</button>`;
+  data.messages.filter(m=>m.name===name).forEach(m=>{
+    const p=document.createElement("p");
+    p.style.cssText="background:#d9eaff;padding:12px;border-radius:14px;margin-left:35px";
+    p.textContent=m.text;
+    $("chatList").appendChild(p);
+  });
+}
+
+function sendMessage(encodedName) {
+  const name=decodeURIComponent(encodedName);
+  const text=$("chatInput").value.trim();
+  if(!text)return;
+  data.messages.push({name,text});
+  save();
+  conversation(name);
+}
+
+function newNote() {
+  data.notes.push({title:"",body:""});
+  save();
+  editNote(data.notes.length-1);
+}
+
+function editNote(i) {
+  const note=data.notes[i];
+  $("appContent").innerHTML=`
+    <button class="back" onclick="renderApp('notes')">‹ Notas</button>
+    <input id="noteTitle" placeholder="Título" value="${escapeText(note.title)}">
+    <textarea id="noteBody" placeholder="Empieza a escribir...">${escapeText(note.body)}</textarea>
+    <button class="action" onclick="saveNote(${i})">Guardar</button>
+    <button class="action" onclick="deleteNote(${i})" style="background:#e34b55">Eliminar</button>`;
+}
+
+function saveNote(i) {
+  data.notes[i]={
+    title:$("noteTitle").value,
+    body:$("noteBody").value
+  };
+  save();
+  renderApp("notes");
+}
+
+function deleteNote(i) {
+  if(!confirm("¿Eliminar esta nota?"))return;
+  data.notes.splice(i,1);
+  save();
+  renderApp("notes");
+}
+
+function addEvent() {
+  const title=prompt("Nombre del evento:");
+  if(!title)return;
+  const date=prompt("Fecha (AAAA-MM-DD):");
+  if(!date)return;
+  data.events.push({title,date});
+  save();
+  renderApp("calendar");
+}
+
+function addEmail() {
+  const from=prompt("Remitente:");
+  if(!from)return;
+  const subject=prompt("Asunto:");
+  if(!subject)return;
+  const body=prompt("Contenido del correo:") || "";
+  data.emails.unshift({from,subject,body});
+  save();
+  renderApp("mail");
+}
+
+function addPhotos(input) {
+  const files=Array.from(input.files);
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=()=>{
+      data.photos.push(reader.result);
+      save();
+      renderApp("photos");
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function setWallpaper(input) {
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    localStorage.setItem("iphoneWallpaper",reader.result);
+    applyWallpaper();
+  };
+  reader.readAsDataURL(file);
+}
+
+function applyWallpaper() {
+  const wallpaper=localStorage.getItem("iphoneWallpaper");
+  if(wallpaper) $("wallpaper").style.backgroundImage=`url("${wallpaper}")`;
+}
+
+function resetWallpaper() {
+  localStorage.removeItem("iphoneWallpaper");
+  $("wallpaper").style.backgroundImage="";
+}
+
+function lockPhone() {
+  closeApp();
+  $("homeScreen").classList.remove("active");
+  $("lockScreen").classList.add("active");
+}
+
+let cameraStream;
+
+async function startCamera() {
+  try {
+    cameraStream=await navigator.mediaDevices.getUserMedia({video:true});
+    $("cameraVideo").srcObject=cameraStream;
+    $("cameraStatus").textContent="Cámara activada.";
+  } catch(e) {
+    $("cameraStatus").textContent="No se pudo acceder a la cámara. Comprueba los permisos.";
+  }
+}
+
+function takePhoto() {
+  const video=$("cameraVideo");
+  if(!video.videoWidth)return alert("Primero abre la cámara.");
+  const canvas=$("cameraCanvas");
+  canvas.width=video.videoWidth;
+  canvas.height=video.videoHeight;
+  canvas.getContext("2d").drawImage(video,0,0);
+  const photo=canvas.toDataURL("image/jpeg",0.85);
+  data.photos.push(photo);
+  save();
+  alert("Fotografía guardada en Fotos.");
+}
+
+function escapeText(value) {
+  return String(value).replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+applyWallpaper();
+</script>
+</body>
+</html>
