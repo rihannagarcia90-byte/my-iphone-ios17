@@ -228,6 +228,7 @@ function pressKey(n){
     document.querySelectorAll(".dot").forEach(d=>d.classList.remove("filled"));
   },250);
 }
+  window.pressKey = pressKey;
 function openApp(id){
   const app=CONFIG.apps.find(a=>a.id===id);if(!app)return;
   $("homeScreen").classList.remove("active");$("appScreen").classList.add("open");
