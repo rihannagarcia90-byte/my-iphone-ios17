@@ -221,9 +221,9 @@ function buildHome(){
 buildHome();
 
 function pressKey(n){
-  if(code.length>=6)return;code+=n;
+  if(code.length>=4)return;code+=n;
   document.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("filled",i<code.length));
-  if(code.length===6)setTimeout(()=>{
+  if(code.length===4)setTimeout(()=>{
     $("lockScreen").classList.remove("active");$("homeScreen").classList.add("active");code="";
     document.querySelectorAll(".dot").forEach(d=>d.classList.remove("filled"));
   },250);
